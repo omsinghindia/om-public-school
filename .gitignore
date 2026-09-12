@@ -1,0 +1,17 @@
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Logs & temp files
+*.log
+scratch/
+.system_generated/
+.user_uploaded/
+
+# Local server / environment
+.env
+.vscode/
+.idea/
+powershell.bat
+powershell.cmd

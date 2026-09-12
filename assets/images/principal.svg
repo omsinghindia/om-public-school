@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGradPrinc" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eff6ff"/>
+      <stop offset="100%" stop-color="#bfdbfe"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" fill="url(#bgGradPrinc)"/>
+  <circle cx="100" cy="100" r="95" fill="none" stroke="#2563eb" stroke-width="4"/>
+
+  <!-- Female Academic Portrait: Dr. Sunita Verma, Principal -->
+  <!-- Formal Saree Blouse / Blazer -->
+  <path d="M40 200 C40 155 70 148 100 148 C130 148 160 155 160 200 Z" fill="#1e3a8a"/>
+  <!-- Elegant Saree Pallu across shoulder -->
+  <path d="M40 190 C60 155 75 145 92 148 L80 200 Z" fill="#d97706"/>
+  <circle cx="100" cy="165" r="5" fill="#fdb813"/>
+
+  <!-- Neck -->
+  <rect x="88" y="122" width="24" height="26" fill="#f5c29c" rx="4"/>
+
+  <!-- Hair back -->
+  <circle cx="100" cy="80" r="46" fill="#1e1b4b"/>
+
+  <!-- Face -->
+  <ellipse cx="100" cy="90" rx="33" ry="38" fill="#fad2b3"/>
+
+  <!-- Hair front style -->
+  <path d="M67 85 C67 55 80 44 100 44 C120 44 133 55 133 85 C125 58 115 52 100 52 C85 52 75 58 67 85 Z" fill="#1e1b4b"/>
+  <!-- Traditional Bindi -->
+  <circle cx="100" cy="74" r="2.5" fill="#dc2626"/>
+
+  <!-- Spectacles -->
+  <rect x="74" y="80" width="20" height="13" rx="3" fill="none" stroke="#1e293b" stroke-width="2"/>
+  <rect x="106" y="80" width="20" height="13" rx="3" fill="none" stroke="#1e293b" stroke-width="2"/>
+  <line x1="94" y1="86" x2="106" y2="86" stroke="#1e293b" stroke-width="2"/>
+
+  <!-- Eyes -->
+  <circle cx="84" cy="86" r="2" fill="#0f172a"/>
+  <circle cx="116" cy="86" r="2" fill="#0f172a"/>
+
+  <!-- Nose -->
+  <path d="M100 87 L98 99 L102 99" stroke="#d97706" stroke-width="1.8" fill="none"/>
+
+  <!-- Smile -->
+  <path d="M90 110 Q100 116 110 110" stroke="#be123c" stroke-width="2.5" fill="none"/>
+</svg>

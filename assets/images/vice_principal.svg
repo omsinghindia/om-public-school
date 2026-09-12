@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGradVP" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fdf4ff"/>
+      <stop offset="100%" stop-color="#f5d0fe"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" fill="url(#bgGradVP)"/>
+  <circle cx="100" cy="100" r="95" fill="none" stroke="#9333ea" stroke-width="4"/>
+
+  <!-- Female Academic Portrait: Mrs. Meenakshi Sundaram, Vice Principal -->
+  <!-- Formal Attire -->
+  <path d="M40 200 C40 155 70 148 100 148 C130 148 160 155 160 200 Z" fill="#581c87"/>
+  <path d="M40 190 C60 155 75 145 92 148 L80 200 Z" fill="#0284c7"/>
+
+  <!-- Neck -->
+  <rect x="88" y="120" width="24" height="26" fill="#f8cbb0" rx="4"/>
+
+  <!-- Hair back -->
+  <circle cx="100" cy="80" r="46" fill="#0f172a"/>
+
+  <!-- Face -->
+  <ellipse cx="100" cy="88" rx="33" ry="37" fill="#fed7aa"/>
+
+  <!-- Hair front style -->
+  <path d="M67 85 C67 52 80 40 100 40 C120 40 133 52 133 85 C125 58 115 50 100 50 C85 50 75 58 67 85 Z" fill="#0f172a"/>
+
+  <!-- Small Bindi -->
+  <circle cx="100" cy="74" r="2.5" fill="#991b1b"/>
+
+  <!-- Eyes -->
+  <circle cx="84" cy="84" r="2.5" fill="#0f172a"/>
+  <circle cx="116" cy="84" r="2.5" fill="#0f172a"/>
+
+  <!-- Eyebrows -->
+  <path d="M76 77 Q84 74 92 78" stroke="#1e293b" stroke-width="2" fill="none"/>
+  <path d="M108 78 Q116 74 124 77" stroke="#1e293b" stroke-width="2" fill="none"/>
+
+  <!-- Nose -->
+  <path d="M100 85 L98 97 L102 97" stroke="#ea580c" stroke-width="1.8" fill="none"/>
+
+  <!-- Smile -->
+  <path d="M90 108 Q100 114 110 108" stroke="#b91c1c" stroke-width="2.2" fill="none"/>
+</svg>

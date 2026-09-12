@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal — Om Public School</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="alternate icon" type="image/png" href="assets/images/logo.png">
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       1. AUTH VIEW: SECURE ADMIN LOGIN SCREEN
+       ========================================================================== -->
+  <div id="admin-auth-view" class="admin-auth-container">
+    <div class="admin-login-card">
+      <img src="assets/images/logo.png" alt="Om Public School Emblem" class="login-school-logo">
+      <h2 class="login-title">OM PUBLIC SCHOOL</h2>
+      <p class="login-subtitle">Administrator Portal • Notices & Admissions</p>
+
+      <div id="login-alert" class="login-alert"></div>
+
+      <form id="admin-login-form">
+        <div class="login-form-group">
+          <label class="login-label" for="admin-username">Username</label>
+          <input type="text" id="admin-username" class="login-input" required placeholder="Enter admin username" autocomplete="username">
+        </div>
+
+        <div class="login-form-group">
+          <label class="login-label" for="admin-password">Password</label>
+          <input type="password" id="admin-password" class="login-input" required placeholder="••••••••••••" autocomplete="current-password">
+        </div>
+
+        <button type="submit" id="btn-login-submit" class="btn-admin-login">Sign In to Admin Portal</button>
+      </form>
+
+      <div class="demo-hint-box">
+        <strong>🔒 Demo Access:</strong> When testing locally without Google Apps Script connected, use username: <code>admin</code> and password: <code>opsadmin2025</code>.
+      </div>
+      
+      <div style="margin-top: 1.25rem;">
+        <a href="index.html" class="btn-nav-public" style="color:#64748b; font-size:0.82rem;">← Back to Public Website</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       2. MAIN ADMIN VIEW: DASHBOARD, NOTICES, ADMISSIONS
+       ========================================================================== -->
+  <div id="admin-main-view" style="display: none;">
+    <!-- Top Header (Command Center Layout) -->
+    <header class="admin-header">
+      <div class="admin-header-left">
+        <a href="#" class="admin-brand" onclick="switchAdminTab('dashboard'); return false;">
+          <img src="assets/images/logo.png" alt="Emblem" class="admin-logo-img">
+          <div class="admin-brand-text">
+            <div class="admin-brand-top-row">
+              <h1>OM PUBLIC SCHOOL</h1>
+              <span class="admin-badge-role">STAFF PORTAL</span>
+            </div>
+            <div class="admin-subheading-row">
+              <span class="admin-system-label">ENTERPRISE COMMAND CENTER</span>
+              <span class="admin-divider-dot">•</span>
+              <span class="admin-live-pulse-wrapper">
+                <span class="live-pulse-dot"></span>
+                <span class="live-pulse-text">Live Cloud Sync</span>
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="admin-header-center">
+        <div class="admin-live-clock-pill">
+          <span>🕒</span>
+          <span id="admin-live-clock">Loading live time...</span>
+        </div>
+      </div>
+
+      <div class="admin-header-actions">
+        <button type="button" class="btn-quick-notice" onclick="openAddNoticeModalFromHeader()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>New Notice</span>
+        </button>
+
+        <div class="admin-user-pill">
+          <span class="user-avatar-circle">👤</span>
+          <div class="admin-user-details">
+            <span id="current-admin-user" class="user-name">admin</span>
+            <span class="user-role-tag">Super Admin</span>
+          </div>
+        </div>
+
+        <a href="index.html" class="btn-nav-public" target="_blank" title="Open public website in new tab">🌐 View Website ↗</a>
+        <button id="btn-logout" class="btn-admin-logout" title="Sign out of portal">Logout</button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs Strip -->
+    <nav class="admin-nav-tabs">
+      <button class="admin-tab-btn active" data-tab="dashboard">
+        <span>📊 Dashboard</span>
+      </button>
+      <button class="admin-tab-btn" data-tab="notices">
+        <span>📋 Notices & Circulars</span>
+        <span class="tab-counter-badge" id="tab-notice-count">0</span>
+      </button>
+      <button class="admin-tab-btn" data-tab="admissions">
+        <span>🎓 Admission Applications</span>
+        <span class="tab-counter-badge count-admissions" id="tab-admission-count">0</span>
+      </button>
+      <button class="admin-tab-btn" data-tab="settings">
+        <span>⚙️ System & API</span>
+      </button>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="admin-content-wrap">
+
+      <!-- ======================================================================
+           TAB 1: DASHBOARD OVERVIEW
+           ====================================================================== -->
+      <section id="panel-dashboard" class="admin-view-panel active">
+        <!-- KPI Metric Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card" style="border-left: 4px solid #1e40af;">
+            <div class="kpi-card-info">
+              <h4>Total Notices</h4>
+              <div class="kpi-number" id="kpi-total-notices">0</div>
+            </div>
+            <div class="kpi-icon-badge" style="background:#dbeafe; color:#1e40af;">📋</div>
+          </div>
+
+          <div class="kpi-card" style="border-left: 4px solid #15803d;">
+            <div class="kpi-card-info">
+              <h4>Published Notices</h4>
+              <div class="kpi-number" id="kpi-published-notices">0</div>
+            </div>
+            <div class="kpi-icon-badge" style="background:#dcfce7; color:#15803d;">🌐</div>
+          </div>
+
+          <div class="kpi-card" style="border-left: 4px solid #b45309;">
+            <div class="kpi-card-info">
+              <h4>Draft Notices</h4>
+              <div class="kpi-number" id="kpi-draft-notices">0</div>
+            </div>
+            <div class="kpi-icon-badge" style="background:#fef3c7; color:#b45309;">📝</div>
+          </div>
+
+          <div class="kpi-card" style="border-left: 4px solid #4338ca;">
+            <div class="kpi-card-info">
+              <h4>Total Applications</h4>
+              <div class="kpi-number" id="kpi-total-admissions">0</div>
+            </div>
+            <div class="kpi-icon-badge" style="background:#e0e7ff; color:#4338ca;">🎓</div>
+          </div>
+
+          <div class="kpi-card" style="border-left: 4px solid #0284c7;">
+            <div class="kpi-card-info">
+              <h4>New Submissions</h4>
+              <div class="kpi-number" id="kpi-new-admissions">0</div>
+            </div>
+            <div class="kpi-icon-badge" style="background:#e0f2fe; color:#0284c7;">✨</div>
+          </div>
+
+          <div class="kpi-card" style="border-left: 4px solid #7e22ce;">
+            <div class="kpi-card-info">
+              <h4>Under Review</h4>
+              <div class="kpi-number" id="kpi-under-review">0</div>
+            </div>
+            <div class="kpi-icon-badge" style="background:#f3e8ff; color:#7e22ce;">⏳</div>
+          </div>
+
+          <div class="kpi-card" style="border-left: 4px solid #059669;">
+            <div class="kpi-card-info">
+              <h4>Admitted</h4>
+              <div class="kpi-number" id="kpi-admitted">0</div>
+            </div>
+            <div class="kpi-icon-badge" style="background:#ecfdf5; color:#059669;">✓</div>
+          </div>
+        </div>
+
+        <!-- Recent Admissions Summary -->
+        <div class="table-card-wrap">
+          <div style="padding:1.25rem 1.5rem; border-bottom:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="font-size:1.1rem; font-weight:800; color:#0b2545;">Recent Admission Enquiries</h3>
+            <button class="btn-primary-action" onclick="switchAdminTab('admissions')">View All Applications →</button>
+          </div>
+          <div class="table-responsive" id="dashboard-recent-admissions">
+            <!-- Rendered by admin.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           TAB 2: NOTICES MANAGEMENT
+           ====================================================================== -->
+      <section id="panel-notices" class="admin-view-panel">
+        <!-- Action Toolbar -->
+        <div class="admin-action-bar">
+          <div class="filter-group">
+            <input type="text" id="notice-search-input" class="admin-search-input" placeholder="🔍 Search notices by keyword or ID...">
+            
+            <select id="notice-cat-filter" class="admin-select">
+              <option value="all">All Categories</option>
+              <option value="General">General</option>
+              <option value="Admissions">Admissions</option>
+              <option value="Examination">Examination</option>
+              <option value="Holiday">Holiday</option>
+              <option value="Event">Event</option>
+              <option value="Result">Result</option>
+            </select>
+
+            <select id="notice-status-filter" class="admin-select">
+              <option value="all">All Statuses</option>
+              <option value="Published">Published Only</option>
+              <option value="Draft">Drafts Only</option>
+              <option value="Archived">Archived Only</option>
+            </select>
+          </div>
+
+          <button class="btn-primary-action" onclick="openAddNoticeModal()">
+            <span>➕</span> Add New Notice
+          </button>
+        </div>
+
+        <!-- Notices Table -->
+        <div class="table-card-wrap">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Notice ID</th>
+                  <th>Title & Short Description</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Document</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-notices-tbody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           TAB 3: ADMISSIONS MANAGEMENT
+           ====================================================================== -->
+      <section id="panel-admissions" class="admin-view-panel">
+        <!-- Action Toolbar -->
+        <div class="admin-action-bar">
+          <div class="filter-group">
+            <input type="text" id="admission-search-input" class="admin-search-input" placeholder="🔍 Search student, parent, phone, ID...">
+            
+            <select id="admission-class-filter" class="admin-select">
+              <option value="all">All Classes</option>
+              <option value="Pre-Primary">Pre-Primary (Nursery/KG)</option>
+              <option value="Primary">Primary (Class 1-5)</option>
+              <option value="Middle">Middle School (Class 6-8)</option>
+              <option value="Secondary">Secondary (Class 9-10)</option>
+              <option value="Science">Class 11 Science</option>
+              <option value="Commerce">Class 11 Commerce</option>
+              <option value="Humanities">Class 11 Humanities</option>
+            </select>
+
+            <select id="admission-status-filter" class="admin-select">
+              <option value="all">All Statuses</option>
+              <option value="NEW">New Submissions</option>
+              <option value="UNDER_REVIEW">Under Review</option>
+              <option value="SHORTLISTED">Shortlisted</option>
+              <option value="ADMITTED">Admitted</option>
+              <option value="REJECTED">Rejected</option>
+            </select>
+          </div>
+
+          <button id="btn-export-admissions-csv" class="btn-excel-export">
+            <span>📥</span> Download Excel / CSV
+          </button>
+        </div>
+
+        <!-- Admissions Table -->
+        <div class="table-card-wrap">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Application ID</th>
+                  <th>Student Name</th>
+                  <th>Class Applied</th>
+                  <th>Parent / Guardian</th>
+                  <th>Mobile Number</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-admissions-tbody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           TAB 4: SYSTEM & SETTINGS
+           ====================================================================== -->
+      <section id="panel-settings" class="admin-view-panel">
+        <div class="table-card-wrap" style="padding: 2rem; max-width: 900px;">
+          <h3 style="font-size:1.3rem; font-weight:800; color:#0b2545; margin-bottom:1rem;">Backend & API Configuration</h3>
+          
+          <div style="margin-bottom:1.5rem; padding:1rem; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
+            <div style="font-size:0.82rem; font-weight:700; color:#64748b; margin-bottom:4px;">CURRENT API ENDPOINT:</div>
+            <div id="settings-api-endpoint" style="font-family:monospace; font-size:0.95rem; color:#0b2545; word-break:break-all; font-weight:700;"></div>
+            <div id="settings-api-status" style="margin-top:0.5rem; font-size:0.88rem;"></div>
+          </div>
+
+          <h4 style="font-weight:800; color:#0b2545; margin-bottom:0.5rem;">How Google Cloud Free Tier Works:</h4>
+          <ul style="padding-left:1.5rem; font-size:0.9rem; color:#334155; line-height:1.7; margin-bottom:1.5rem;">
+            <li><strong>Database:</strong> Google Spreadsheet with sheets <code>Notices</code> and <code>Admissions</code>.</li>
+            <li><strong>Document Storage:</strong> Dedicated Google Drive folder for notice PDFs.</li>
+            <li><strong>Backend Service:</strong> Google Apps Script Web App providing REST API operations with zero hosting fees.</li>
+            <li><strong>Future Android App:</strong> The exact same backend endpoints will serve your upcoming mobile app.</li>
+          </ul>
+
+          <h4 style="font-weight:800; color:#0b2545; margin-bottom:0.5rem;">Admin Credentials:</h4>
+          <p style="font-size:0.88rem; color:#475569; margin-bottom:1rem;">
+            Admin credentials are securely stored in your Google Apps Script <strong>Script Properties</strong> (<code>ADMIN_USERNAME</code> and <code>ADMIN_PASSWORD</code>). They are never exposed in client HTML/JavaScript.
+          </p>
+
+          <a href="SETUP.md" target="_blank" class="btn-primary-action" style="display:inline-flex;">
+            📖 View Complete Deployment Guide (SETUP.md)
+          </a>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 1: ADD / EDIT NOTICE MODAL
+       ========================================================================== -->
+  <div id="notice-form-modal" class="admin-modal-overlay">
+    <div class="admin-modal-box">
+      <div class="admin-modal-header">
+        <h3 id="notice-modal-title">Create New School Notice</h3>
+        <button class="btn-close-modal" onclick="closeNoticeModal()">✕</button>
+      </div>
+      
+      <form id="notice-edit-form">
+        <input type="hidden" id="notice-form-id">
+
+        <div class="admin-modal-body">
+          <div class="form-group">
+            <label for="notice-form-title">Notice Title *</label>
+            <input type="text" id="notice-form-title" required placeholder="e.g. Term 1 Examination Date Sheet Released">
+          </div>
+
+          <div class="form-grid-2col">
+            <div class="form-group">
+              <label for="notice-form-category">Category *</label>
+              <select id="notice-form-category" required>
+                <option value="General">General</option>
+                <option value="Admissions">Admissions</option>
+                <option value="Examination">Examination</option>
+                <option value="Holiday">Holiday</option>
+                <option value="Event">Event</option>
+                <option value="Result">Result</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="notice-form-status">Status *</label>
+              <select id="notice-form-status" required>
+                <option value="Published">Published (Public)</option>
+                <option value="Draft">Draft (Hidden)</option>
+                <option value="Archived">Archived</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-2col">
+            <div class="form-group">
+              <label for="notice-form-date">Publish Date *</label>
+              <input type="date" id="notice-form-date" required>
+            </div>
+
+            <div class="form-group">
+              <label for="notice-form-expiry">Expiry Date (Optional)</label>
+              <input type="date" id="notice-form-expiry">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="notice-form-short-desc">Short Summary / Excerpt</label>
+            <input type="text" id="notice-form-short-desc" placeholder="One-line summary for notification tickers and list views">
+          </div>
+
+          <div class="form-group">
+            <label for="notice-form-desc">Full Notice Content</label>
+            <textarea id="notice-form-desc" rows="4" placeholder="Full circular text, guidelines, instructions..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="notice-form-important">
+              <span>⭐ Highlight as Priority / Important Notice</span>
+            </label>
+          </div>
+
+          <!-- Document Attachment (Google Drive or External URL) -->
+          <div class="form-group">
+            <label>Attach PDF Document</label>
+            <div class="file-upload-dropzone" onclick="document.getElementById('notice-file-input').click()">
+              <input type="file" id="notice-file-input" accept=".pdf,.doc,.docx" style="display:none;">
+              <span style="font-size:1.5rem;">📁</span>
+              <p style="font-size:0.84rem; font-weight:700; color:#0b2545; margin-top:4px;">Click to upload document to Google Drive</p>
+              <span style="font-size:0.75rem; color:#64748b;">PDF or DOC format (Max 10MB)</span>
+            </div>
+            <div id="notice-file-upload-status" style="font-size:0.82rem; font-weight:700; margin-top:4px;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="notice-form-file-url">Or Document URL / Web Link</label>
+            <input type="url" id="notice-form-file-url" placeholder="https://drive.google.com/... or direct PDF link">
+          </div>
+        </div>
+
+        <div class="admin-modal-footer">
+          <button type="button" class="btn-action-sm" onclick="closeNoticeModal()">Cancel</button>
+          <button type="submit" id="btn-save-notice" class="btn-primary-action">Save Notice</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 2: ADMISSION DETAILS MODAL
+       ========================================================================== -->
+  <div id="admission-detail-modal" class="admin-modal-overlay">
+    <div class="admin-modal-box wide">
+      <div class="admin-modal-header">
+        <h3>Application Record: <span id="detail-app-id"></span></h3>
+        <button class="btn-close-modal" onclick="closeAdmissionDetailModal()">✕</button>
+      </div>
+
+      <div class="admin-modal-body">
+        <!-- Student Info -->
+        <div class="detail-section-title">Student Information</div>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="detail-item-label">Full Name</div>
+            <div class="detail-item-value" id="detail-student-name"></div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">Date of Birth</div>
+            <div class="detail-item-value" id="detail-dob"></div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">Gender</div>
+            <div class="detail-item-value" id="detail-gender"></div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">Class Seeking Admission</div>
+            <div class="detail-item-value" id="detail-class"></div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">Previous School</div>
+            <div class="detail-item-value" id="detail-prev-school"></div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">Previous Class</div>
+            <div class="detail-item-value" id="detail-prev-class"></div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">Academic Session</div>
+            <div class="detail-item-value" id="detail-session"></div>
+          </div>
+        </div>
+
+        <!-- Parent Info -->
+        <div class="detail-section-title">Parent / Guardian Information</div>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="detail-item-label">Father's Name</div>
+            <div class="detail-item-value" id="detail-father"></div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">Mother's Name</div>
+            <div class="detail-item-value" id="detail-mother"></div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">Guardian Name</div>
+            <div class="detail-item-value" id="detail-guardian"></div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">Mobile Number</div>
+            <div class="detail-item-value" id="detail-phone"></div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">Email Address</div>
+            <div class="detail-item-value" id="detail-email"></div>
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="detail-section-title">Residential Address</div>
+        <div class="detail-grid">
+          <div class="detail-item" style="grid-column: span 2;">
+            <div class="detail-item-label">Street Address</div>
+            <div class="detail-item-value" id="detail-address"></div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">City</div>
+            <div class="detail-item-value" id="detail-city"></div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">State</div>
+            <div class="detail-item-value" id="detail-state"></div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">PIN Code</div>
+            <div class="detail-item-value" id="detail-pin"></div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-item-label">Submitted On</div>
+            <div class="detail-item-value" id="detail-submitted-at"></div>
+          </div>
+        </div>
+
+        <!-- Status Changer Bar -->
+        <div class="status-changer-bar">
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            <label for="detail-status-select" style="font-weight:800; font-size:0.9rem; color:#0b2545;">Change Status:</label>
+            <select id="detail-status-select" class="admin-select" style="border:2px solid #0b2545;">
+              <option value="NEW">NEW</option>
+              <option value="UNDER_REVIEW">UNDER_REVIEW</option>
+              <option value="SHORTLISTED">SHORTLISTED</option>
+              <option value="ADMITTED">ADMITTED</option>
+              <option value="REJECTED">REJECTED</option>
+            </select>
+          </div>
+          <button id="btn-update-status" class="btn-primary-action" onclick="handleUpdateStatusClick()">Save Status Update</button>
+        </div>
+      </div>
+
+      <div class="admin-modal-footer">
+        <button class="btn-action-sm" onclick="closeAdmissionDetailModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 3: NOTICE PREVIEW MODAL
+       ========================================================================== -->
+  <div id="notice-preview-modal" class="admin-modal-overlay">
+    <div class="admin-modal-box">
+      <div class="admin-modal-header">
+        <h3 id="preview-notice-title">Notice Preview</h3>
+        <button class="btn-close-modal" onclick="closeNoticePreviewModal()">✕</button>
+      </div>
+      <div class="admin-modal-body">
+        <div id="preview-notice-meta" style="font-size:0.8rem; font-weight:700; color:#d97706; margin-bottom:0.75rem;"></div>
+        <p id="preview-notice-desc" style="font-size:0.92rem; color:#334155; line-height:1.6; margin-bottom:1.25rem; white-space:pre-line;"></p>
+        <div id="preview-notice-file-wrap"></div>
+      </div>
+      <div class="admin-modal-footer">
+        <button class="btn-action-sm" onclick="closeNoticePreviewModal()">Close Preview</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 4: CONFIRMATION DIALOG (FOR DESTRUCTIVE ACTIONS)
+       ========================================================================== -->
+  <div id="confirm-dialog-modal" class="admin-modal-overlay">
+    <div class="admin-modal-box" style="max-width:440px;">
+      <div class="admin-modal-header" style="background:#b91c1c;">
+        <h3>Confirm Action</h3>
+        <button class="btn-close-modal" onclick="closeConfirmModal()">✕</button>
+      </div>
+      <div class="admin-modal-body">
+        <p id="confirm-dialog-msg" style="font-size:0.95rem; color:#1e293b; line-height:1.5;"></p>
+      </div>
+      <div class="admin-modal-footer">
+        <button class="btn-action-sm" onclick="closeConfirmModal()">Cancel</button>
+        <button id="btn-confirm-action" class="btn-action-sm danger" style="background:#dc2626; color:#fff; border:none; padding:0.5rem 1rem;">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>
